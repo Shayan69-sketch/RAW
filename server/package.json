@@ -8,7 +8,7 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "build": "cd ../client && npm install && npm run build",
-    "seed": "node seed/seedData.js"
+    "seed": "node --env-file=.env seed/seedData.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
