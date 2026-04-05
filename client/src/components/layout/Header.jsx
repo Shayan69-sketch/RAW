@@ -56,20 +56,20 @@ const Header = () => {
 
             <nav className="hidden lg:flex items-center gap-8">
               {navItems.map((item) => (
-                <div
-                  key={item.key}
-                  className="relative"
-                  onMouseEnter={() => setActiveMenu(item.key)}
-                  onMouseLeave={() => setActiveMenu(null)}
-                >
-                  <Link
-                    to={item.href}
-                    className={`text-sm font-semibold uppercase tracking-wider py-4 transition-colors ${
-                      item.key === 'sale' ? 'text-red-600 hover:text-red-700' : 'hover:text-text-light'
-                    }`}
-                  >
-                    {item.label}
-                  </Link>
+             <div
+  key={item.key}
+  className="relative py-4"
+  onMouseEnter={() => setActiveMenu(item.key)}
+  onMouseLeave={() => setActiveMenu(null)}
+>
+  <Link
+    to={item.href}
+    className={`text-sm font-semibold uppercase tracking-wider transition-colors ${
+      item.key === 'sale' ? 'text-red-600 hover:text-red-700' : 'hover:text-text-light'
+    }`}
+  >
+    {item.label}
+  </Link>
                   {(item.key === 'men' || item.key === 'women') && activeMenu === item.key && (
                     <MegaMenu gender={item.key} onClose={() => setActiveMenu(null)} />
                   )}
