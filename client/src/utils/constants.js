@@ -43,3 +43,13 @@ export const NAV_LINKS = {
     explore: ['Lifting', 'Running', 'Yoga', 'Training'],
   },
 };
+
+export const CURRENCIES = [
+  { code: 'USD', symbol: '$', flag: '🇺🇸', name: 'US Dollar' },
+  { code: 'GBP', symbol: '£', flag: '🇬🇧', name: 'British Pound' },
+  { code: 'EUR', symbol: '€', flag: '🇪🇺', name: 'Euro' },
+  { code: 'PKR', symbol: '₨', flag: '🇵🇰', name: 'Pakistani Rupee' },
+  { code: 'CAD', symbol: 'CA$', flag: '🇨🇦', name: 'Canadian Dollar' },
+  { code: 'AUD', symbol: 'A$', flag: '🇦🇺', name: 'Australian Dollar' },
+  { code: 'AED', symbol: 'AED', flag: '🇦🇪', name: 'UAE Dirham' },
+];

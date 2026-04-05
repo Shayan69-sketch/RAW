@@ -10,6 +10,7 @@ import MegaMenu from './MegaMenu';
 import MobileMenu from './MobileMenu';
 import SearchOverlay from './SearchOverlay';
 import CartPreview from './CartPreview';
+import CurrencySelector from '../common/CurrencySelector';
 
 const Header = () => {
   const [activeMenu, setActiveMenu] = useState(null);
@@ -20,7 +21,6 @@ const Header = () => {
   const { mobileMenuOpen, searchOpen } = useSelector((state) => state.ui);
   const dispatch = useDispatch();
 
-  // Auto-open cart preview when item is added
   useEffect(() => {
     if (cartCount > prevCartCount.current) {
       setCartOpen(true);
@@ -45,7 +45,7 @@ const Header = () => {
             <Link to="/account/orders" className="hover:text-primary transition-colors">Track Order</Link>
           </div>
           <div className="flex gap-6 items-center">
-            <button className="hover:text-primary transition-colors">🇺🇸 US | USD $</button>
+            <CurrencySelector />
             {isAdmin && (
               <Link to="/admin" className="hover:text-primary transition-colors font-semibold">Admin Dashboard</Link>
             )}
@@ -54,7 +54,6 @@ const Header = () => {
 
         {/* Main header */}
         <div className="flex items-center justify-between px-4 lg:px-8 py-3 lg:py-4">
-          {/* Left: Hamburger + Nav */}
           <div className="flex items-center gap-6">
             <button
               className="lg:hidden p-1"
@@ -88,14 +87,10 @@ const Header = () => {
             </nav>
           </div>
 
-          {/* Center: Logo */}
           <Link to="/" className="absolute left-1/2 -translate-x-1/2 lg:relative lg:left-0 lg:translate-x-0">
-            <h1 className="text-xl lg:text-2xl font-black tracking-[0.3em] uppercase">
-              RAWTHREAD
-            </h1>
+            <h1 className="text-xl lg:text-2xl font-black tracking-[0.3em] uppercase">RAWTHREAD</h1>
           </Link>
 
-          {/* Right: Icons */}
           <div className="flex items-center gap-3 lg:gap-5">
             <button
               onClick={() => dispatch(setSearchOpen(true))}
@@ -121,7 +116,6 @@ const Header = () => {
               <FiUser size={20} />
             </Link>
 
-            {/* Cart with preview */}
             <div className="relative">
               <button
                 onClick={() => setCartOpen(true)}
@@ -144,15 +138,12 @@ const Header = () => {
         </div>
       </header>
 
-      {/* Cart Preview Drawer */}
       <CartPreview isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
-      {/* Mobile Menu */}
       <AnimatePresence>
         {mobileMenuOpen && <MobileMenu />}
       </AnimatePresence>
 
-      {/* Search Overlay */}
       <AnimatePresence>
         {searchOpen && <SearchOverlay />}
       </AnimatePresence>

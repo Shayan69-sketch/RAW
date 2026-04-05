@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { HelmetProvider } from 'react-helmet-async';
 import { store } from './store/store';
+import { CurrencyProvider } from './context/CurrencyContext';
 import App from './App';
 import './index.css';
 
@@ -12,7 +13,9 @@ createRoot(document.getElementById('root')).render(
     <Provider store={store}>
       <BrowserRouter>
         <HelmetProvider>
-          <App />
+          <CurrencyProvider>
+            <App />
+          </CurrencyProvider>
         </HelmetProvider>
       </BrowserRouter>
     </Provider>
