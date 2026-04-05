@@ -56,7 +56,7 @@ const Header = () => {
 
             <nav className="hidden lg:flex items-center gap-8">
               {navItems.map((item) => (
-             <div
+    <div
   key={item.key}
   className="relative py-4"
   onMouseEnter={() => setActiveMenu(item.key)}
