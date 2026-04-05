@@ -7,8 +7,6 @@ import cookieParser from 'cookie-parser';
 import connectDB from './config/db.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { apiLimiter } from './middleware/rateLimiter.js';
-import { fileURLToPath } from 'url';
-import path from 'path';
 
 // Route imports
 import authRoutes from './routes/authRoutes.js';
@@ -25,9 +23,6 @@ import newsletterRoutes from './routes/newsletterRoutes.js';
 import searchRoutes from './routes/searchRoutes.js';
 
 dotenv.config();
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -60,14 +55,9 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/newsletter', newsletterRoutes);
 app.use('/api/search', searchRoutes);
 
+// Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
-});
-
-// Serve React frontend
-app.use(express.static(path.join(__dirname, '../client/dist')));
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 
 app.use(errorHandler);
