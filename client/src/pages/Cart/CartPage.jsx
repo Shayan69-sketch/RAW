@@ -7,7 +7,7 @@ import FreeShippingBar from '../../components/common/FreeShippingBar';
 import ProductCard from '../../components/common/ProductCard';
 import { useGetCartQuery, useUpdateCartItemMutation, useRemoveCartItemMutation, useApplyCouponMutation, useRemoveCouponMutation } from '../../services/cartApi';
 import { useGetProductsQuery } from '../../services/productApi';
-import { formatPrice } from '../../utils/formatPrice';
+import { useCurrency } from '../../context/CurrencyContext';
 import { useState } from 'react';
 
 const CartPage = () => {
@@ -18,6 +18,7 @@ const CartPage = () => {
   const [removeCoupon] = useRemoveCouponMutation();
   const [couponCode, setCouponCode] = useState('');
   const { data: relatedData } = useGetProductsQuery({ isTrending: true, limit: 4 });
+  const { format } = useCurrency();
 
   const cart = cartData?.cart;
   const items = cart?.items || [];
@@ -38,32 +39,20 @@ const CartPage = () => {
 
   const handleQuantityChange = async (itemId, newQty) => {
     if (newQty < 1) return;
-    try {
-      await updateItem({ itemId, quantity: newQty }).unwrap();
-    } catch (err) {
-      toast.error('Failed to update quantity');
-    }
+    try { await updateItem({ itemId, quantity: newQty }).unwrap(); }
+    catch { toast.error('Failed to update quantity'); }
   };
 
   const handleRemove = async (itemId) => {
-    try {
-      await removeItem(itemId).unwrap();
-      toast.success('Item removed from cart');
-    } catch (err) {
-      toast.error('Failed to remove item');
-    }
+    try { await removeItem(itemId).unwrap(); toast.success('Item removed from cart'); }
+    catch { toast.error('Failed to remove item'); }
   };
 
   const handleApplyCoupon = async (e) => {
     e.preventDefault();
     if (!couponCode.trim()) return;
-    try {
-      await applyCoupon({ code: couponCode }).unwrap();
-      toast.success('Coupon applied!');
-      setCouponCode('');
-    } catch (err) {
-      toast.error(err?.data?.message || 'Invalid coupon');
-    }
+    try { await applyCoupon({ code: couponCode }).unwrap(); toast.success('Coupon applied!'); setCouponCode(''); }
+    catch (err) { toast.error(err?.data?.message || 'Invalid coupon'); }
   };
 
   if (isLoading) {
@@ -87,7 +76,6 @@ const CartPage = () => {
       <div className="max-w-7xl mx-auto px-4 py-4">
         <Breadcrumb items={[{ label: 'Cart' }]} />
         <h1 className="text-2xl lg:text-3xl font-bold uppercase tracking-tight mb-8">Your Bag ({items.length})</h1>
-
         <FreeShippingBar subtotal={subtotal} />
 
         <div className="lg:flex lg:gap-10">
@@ -111,7 +99,7 @@ const CartPage = () => {
                           <Link to={`/products/${product?.slug}`} className="font-semibold text-sm hover:underline">{product?.name}</Link>
                           <p className="text-xs text-text-muted mt-0.5">{item.color} / {item.size}</p>
                         </div>
-                        <p className="font-semibold text-sm">{formatPrice(price * item.quantity)}</p>
+                        <p className="font-semibold text-sm">{format(price * item.quantity)}</p>
                       </div>
                       <div className="flex items-center justify-between mt-4">
                         <div className="flex items-center border border-border">
@@ -134,12 +122,11 @@ const CartPage = () => {
           <div className="lg:w-96 mt-8 lg:mt-0">
             <div className="bg-bg-alt p-6 sticky top-32">
               <h2 className="text-lg font-bold uppercase tracking-wider mb-6">Order Summary</h2>
-
               <div className="space-y-3 mb-6">
-                <div className="flex justify-between text-sm"><span>Subtotal</span><span>{formatPrice(subtotal)}</span></div>
-                {discount > 0 && <div className="flex justify-between text-sm text-green-600"><span>Discount ({cart.couponApplied.code})</span><span>-{formatPrice(discount)}</span></div>}
-                <div className="flex justify-between text-sm"><span>Shipping</span><span>{shipping === 0 ? 'FREE' : formatPrice(shipping)}</span></div>
-                <div className="border-t border-border pt-3 flex justify-between font-bold"><span>Total</span><span>{formatPrice(total)}</span></div>
+                <div className="flex justify-between text-sm"><span>Subtotal</span><span>{format(subtotal)}</span></div>
+                {discount > 0 && <div className="flex justify-between text-sm text-green-600"><span>Discount ({cart.couponApplied.code})</span><span>-{format(discount)}</span></div>}
+                <div className="flex justify-between text-sm"><span>Shipping</span><span>{shipping === 0 ? 'FREE' : format(shipping)}</span></div>
+                <div className="border-t border-border pt-3 flex justify-between font-bold"><span>Total</span><span>{format(total)}</span></div>
               </div>
 
               {/* Coupon */}
@@ -160,15 +147,11 @@ const CartPage = () => {
               <Link to="/checkout" className="block w-full py-4 bg-primary text-white text-center text-sm font-bold uppercase tracking-widest hover:bg-primary-light transition-colors">
                 Secure Checkout
               </Link>
-
-              <p className="text-center text-[10px] text-text-muted mt-3 uppercase tracking-wider">
-                🔒 Secure SSL Encrypted Checkout
-              </p>
+              <p className="text-center text-[10px] text-text-muted mt-3 uppercase tracking-wider">🔒 Secure SSL Encrypted Checkout</p>
             </div>
           </div>
         </div>
 
-        {/* You May Also Like */}
         {relatedData?.products?.length > 0 && (
           <section className="mt-16 mb-8">
             <h2 className="section-title mb-8">You May Also Like</h2>

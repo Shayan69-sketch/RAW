@@ -6,7 +6,7 @@ import { useGetCartQuery } from '../../services/cartApi';
 import { useCreateOrderMutation } from '../../services/orderApi';
 import { useCreateStripeIntentMutation } from '../../services/paymentApi';
 import { useAuth } from '../../hooks/useAuth';
-import { formatPrice } from '../../utils/formatPrice';
+import { useCurrency } from '../../context/CurrencyContext';
 
 const CheckoutPage = () => {
   const { user, isLoggedIn } = useAuth();
@@ -14,6 +14,7 @@ const CheckoutPage = () => {
   const [createOrder, { isLoading }] = useCreateOrderMutation();
   const [createStripeIntent] = useCreateStripeIntentMutation();
   const navigate = useNavigate();
+  const { format } = useCurrency();
   const [step, setStep] = useState(1);
 
   const [contact, setContact] = useState({ email: user?.email || '', phone: '' });
@@ -54,7 +55,7 @@ const CheckoutPage = () => {
     <>
       <SEO title="Checkout" />
       <div className="max-w-5xl mx-auto px-4 py-8">
-        {/* Minimal header */}
+        {/* Header */}
         <div className="text-center mb-10 border-b border-border pb-6">
           <h1 className="text-2xl font-black tracking-[0.3em] uppercase">RAWTHREAD</h1>
           <p className="text-xs text-text-muted mt-1 uppercase tracking-widest">Secure Checkout</p>
@@ -64,10 +65,12 @@ const CheckoutPage = () => {
         <div className="flex items-center justify-center gap-2 mb-10 text-sm">
           {['Contact', 'Shipping', 'Payment', 'Review'].map((s, idx) => (
             <div key={s} className="flex items-center gap-2">
-              <button onClick={() => setStep(idx + 1)}
-                className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${
-                  step >= idx + 1 ? 'bg-primary text-white' : 'bg-gray-200 text-text-muted'
-                }`}>{idx + 1}</button>
+              <button
+                onClick={() => setStep(idx + 1)}
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${step >= idx + 1 ? 'bg-primary text-white' : 'bg-gray-200 text-text-muted'}`}
+              >
+                {idx + 1}
+              </button>
               <span className={`hidden sm:inline ${step === idx + 1 ? 'font-semibold' : 'text-text-muted'}`}>{s}</span>
               {idx < 3 && <div className={`w-8 h-px ${step > idx + 1 ? 'bg-primary' : 'bg-gray-200'}`} />}
             </div>
@@ -111,7 +114,7 @@ const CheckoutPage = () => {
                   <input type="radio" name="payment" checked={paymentMethod === 'paypal'} onChange={() => setPaymentMethod('paypal')} />
                   <span className="font-semibold text-sm">PayPal</span>
                 </label>
-                <p className="text-xs text-text-muted">💳 Payment will be processed securely. In demo mode, orders are placed directly.</p>
+                <p className="text-xs text-text-muted">🔒 Payment will be processed securely.</p>
                 <button onClick={() => setStep(4)} className="btn btn-primary w-full py-4">Review Order</button>
               </div>
             )}
@@ -119,11 +122,20 @@ const CheckoutPage = () => {
             {step === 4 && (
               <div className="space-y-6">
                 <h2 className="text-lg font-bold uppercase tracking-wider mb-4">Review Your Order</h2>
-                <div className="border border-border p-4"><h3 className="text-xs font-bold uppercase mb-2">Contact</h3><p className="text-sm">{contact.email}</p></div>
-                <div className="border border-border p-4"><h3 className="text-xs font-bold uppercase mb-2">Ship To</h3><p className="text-sm">{shipping.street}, {shipping.city}, {shipping.state} {shipping.zip}</p></div>
-                <div className="border border-border p-4"><h3 className="text-xs font-bold uppercase mb-2">Payment</h3><p className="text-sm capitalize">{paymentMethod}</p></div>
+                <div className="border border-border p-4">
+                  <h3 className="text-xs font-bold uppercase mb-2">Contact</h3>
+                  <p className="text-sm">{contact.email}</p>
+                </div>
+                <div className="border border-border p-4">
+                  <h3 className="text-xs font-bold uppercase mb-2">Ship To</h3>
+                  <p className="text-sm">{shipping.street}, {shipping.city}, {shipping.state} {shipping.zip}</p>
+                </div>
+                <div className="border border-border p-4">
+                  <h3 className="text-xs font-bold uppercase mb-2">Payment</h3>
+                  <p className="text-sm capitalize">{paymentMethod}</p>
+                </div>
                 <button onClick={handlePlaceOrder} disabled={isLoading} className="btn btn-primary w-full py-4 text-base">
-                  {isLoading ? 'Processing...' : `Place Order — ${formatPrice(total)}`}
+                  {isLoading ? 'Processing...' : `Place Order — ${format(total)}`}
                 </button>
               </div>
             )}
@@ -137,18 +149,29 @@ const CheckoutPage = () => {
                 {items.map((item) => (
                   <div key={item._id} className="flex gap-3">
                     <div className="relative">
-                      <img src={item.product?.variants?.find((v) => v._id === item.variantId)?.images?.[0]?.url || ''} alt="" className="w-14 h-18 object-cover" />
-                      <span className="absolute -top-1.5 -right-1.5 bg-primary text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center">{item.quantity}</span>
+                      <img
+                        src={item.product?.variants?.find((v) => v._id === item.variantId)?.images?.[0]?.url || ''}
+                        alt=""
+                        className="w-14 h-18 object-cover"
+                      />
+                      <span className="absolute -top-1.5 -right-1.5 bg-primary text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center">
+                        {item.quantity}
+                      </span>
                     </div>
-                    <div className="flex-1 min-w-0"><p className="text-xs font-semibold truncate">{item.product?.name}</p><p className="text-[10px] text-text-muted">{item.color} / {item.size}</p></div>
-                    <span className="text-xs font-semibold">{formatPrice(item.priceAtAdd * item.quantity)}</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-semibold truncate">{item.product?.name}</p>
+                      <p className="text-[10px] text-text-muted">{item.color} / {item.size}</p>
+                    </div>
+                    <span className="text-xs font-semibold">{format(item.priceAtAdd * item.quantity)}</span>
                   </div>
                 ))}
               </div>
               <div className="space-y-2 border-t border-border pt-3 text-sm">
-                <div className="flex justify-between"><span>Subtotal</span><span>{formatPrice(subtotal)}</span></div>
-                <div className="flex justify-between"><span>Shipping</span><span>{shippingCost === 0 ? 'FREE' : formatPrice(shippingCost)}</span></div>
-                <div className="flex justify-between font-bold text-base pt-2 border-t border-border"><span>Total</span><span>{formatPrice(total)}</span></div>
+                <div className="flex justify-between"><span>Subtotal</span><span>{format(subtotal)}</span></div>
+                <div className="flex justify-between"><span>Shipping</span><span>{shippingCost === 0 ? 'FREE' : format(shippingCost)}</span></div>
+                <div className="flex justify-between font-bold text-base pt-2 border-t border-border">
+                  <span>Total</span><span>{format(total)}</span>
+                </div>
               </div>
             </div>
           </div>

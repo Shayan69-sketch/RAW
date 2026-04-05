@@ -2,15 +2,17 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FiHeart, FiEye } from 'react-icons/fi';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setQuickViewProduct } from '../../features/ui/uiSlice';
-import { formatPrice, getDiscountPercentage } from '../../utils/formatPrice';
+import { getDiscountPercentage } from '../../utils/formatPrice';
 import { getStockStatus } from '../../utils/helpers';
+import { useCurrency } from '../../context/CurrencyContext';
 
 const ProductCard = ({ product }) => {
   const [selectedVariant, setSelectedVariant] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const dispatch = useDispatch();
+  const { format } = useCurrency();
 
   if (!product) return null;
 
@@ -19,8 +21,6 @@ const ProductCard = ({ product }) => {
   const secondaryImage = variant?.images?.[1] || primaryImage;
   const price = product.isSale && product.salePrice ? product.salePrice : product.basePrice;
   const discount = getDiscountPercentage(product.basePrice, product.salePrice);
-
-  // Get minimum stock across sizes for the variant
   const minStock = variant?.sizes?.reduce((min, s) => Math.min(min, s.stock), Infinity) || 0;
   const stockStatus = getStockStatus(minStock);
 
@@ -40,43 +40,25 @@ const ProductCard = ({ product }) => {
           className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
           loading="lazy"
         />
-
-        {/* Sale badge */}
         {product.isSale && discount > 0 && (
           <span className="absolute top-3 left-3 bg-red-600 text-white text-[10px] font-bold px-2 py-1 uppercase">
             -{discount}%
           </span>
         )}
-
-        {/* Low stock */}
         {stockStatus.urgent && (
           <span className="absolute top-3 right-3 bg-orange-600 text-white text-[10px] font-bold px-2 py-1">
             {stockStatus.text}
           </span>
         )}
-
-        {/* Quick actions */}
-        <div
-          className={`absolute bottom-0 left-0 right-0 p-3 flex gap-2 transition-all duration-300 ${
-            isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-          }`}
-        >
+        <div className={`absolute bottom-0 left-0 right-0 p-3 flex gap-2 transition-all duration-300 ${isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
           <button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              dispatch(setQuickViewProduct(product));
-            }}
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); dispatch(setQuickViewProduct(product)); }}
             className="flex-1 bg-white text-primary py-2.5 text-xs font-bold uppercase tracking-wider hover:bg-primary hover:text-white transition-colors flex items-center justify-center gap-2"
           >
             <FiEye size={14} /> Quick View
           </button>
           <button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              // Add to wishlist handled elsewhere
-            }}
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
             className="bg-white text-primary p-2.5 hover:bg-primary hover:text-white transition-colors"
           >
             <FiHeart size={16} />
@@ -91,9 +73,7 @@ const ProductCard = ({ product }) => {
             <button
               key={v._id || idx}
               onClick={() => setSelectedVariant(idx)}
-              className={`w-4 h-4 rounded-full border-2 transition-all ${
-                idx === selectedVariant ? 'border-primary scale-125' : 'border-gray-300'
-              }`}
+              className={`w-4 h-4 rounded-full border-2 transition-all ${idx === selectedVariant ? 'border-primary scale-125' : 'border-gray-300'}`}
               style={{ backgroundColor: v.colorHex }}
               title={v.color}
             />
@@ -106,10 +86,10 @@ const ProductCard = ({ product }) => {
         <h3 className="text-sm font-semibold mb-1 group-hover:underline">{product.name}</h3>
         <div className="flex items-center gap-2">
           <span className={`text-sm font-bold ${product.isSale ? 'text-red-600' : ''}`}>
-            {formatPrice(price)}
+            {format(price)}
           </span>
           {product.isSale && product.salePrice && (
-            <span className="text-sm text-text-muted line-through">{formatPrice(product.basePrice)}</span>
+            <span className="text-sm text-text-muted line-through">{format(product.basePrice)}</span>
           )}
         </div>
         {product.ratings?.count > 0 && (
