@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -16,8 +16,17 @@ const Header = () => {
   const [cartOpen, setCartOpen] = useState(false);
   const { isLoggedIn, isAdmin } = useAuth();
   const cartCount = useSelector(selectCartItemCount);
+  const prevCartCount = useRef(cartCount);
   const { mobileMenuOpen, searchOpen } = useSelector((state) => state.ui);
   const dispatch = useDispatch();
+
+  // Auto-open cart preview when item is added
+  useEffect(() => {
+    if (cartCount > prevCartCount.current) {
+      setCartOpen(true);
+    }
+    prevCartCount.current = cartCount;
+  }, [cartCount]);
 
   const navItems = [
     { label: 'Men', key: 'men', href: '/products?gender=men' },
