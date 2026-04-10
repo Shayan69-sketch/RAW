@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -33,7 +33,7 @@ const ProductDetailPage = () => {
   const product = data?.product;
 
   // Track recently viewed
-  useMemo(() => {
+  useEffect(() => {
     if (product) addRecentlyViewed(product);
   }, [product?.slug]);
 
@@ -106,7 +106,7 @@ const ProductDetailPage = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-16">
           {/* Images */}
-          <div>
+          <div className="relative">
             <Swiper
               modules={[Navigation, Thumbs, Zoom]}
               navigation

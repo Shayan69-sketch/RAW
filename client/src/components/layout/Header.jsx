@@ -10,7 +10,7 @@ import MegaMenu from './MegaMenu';
 import MobileMenu from './MobileMenu';
 import SearchOverlay from './SearchOverlay';
 import CartPreview from './CartPreview';
-import CurrencySelector from '../common/CurrencySelector';
+import CurrencySelector from '../../context/CurrencySelector';
 
 const Header = () => {
   const [activeMenu, setActiveMenu] = useState(null);
@@ -37,9 +37,9 @@ const Header = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-white border-b border-border">
-        {/* Top utility bar */}
-        <div className="hidden lg:flex items-center justify-between px-8 py-1.5 text-[11px] text-text-light border-b border-border">
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100">
+        {/* Top utility bar — desktop */}
+        <div className="hidden lg:flex items-center justify-between px-8 py-1.5 text-[11px] text-text-light border-b border-gray-100">
           <div className="flex gap-6">
             <Link to="/help" className="hover:text-primary transition-colors">Help</Link>
             <Link to="/account/orders" className="hover:text-primary transition-colors">Track Order</Link>
@@ -53,14 +53,15 @@ const Header = () => {
         </div>
 
         {/* Main header */}
-        <div className="flex items-center justify-between px-4 lg:px-8 py-3 lg:py-4">
-          <div className="flex items-center gap-6">
+        <div className="flex items-center justify-between px-4 lg:px-8 h-14 lg:h-16">
+          {/* Left: menu + nav */}
+          <div className="flex items-center gap-4 lg:gap-6">
             <button
-              className="lg:hidden p-1"
+              className="lg:hidden p-2 -ml-2 rounded-full active:bg-gray-100 transition-colors"
               onClick={() => dispatch(setMobileMenuOpen(!mobileMenuOpen))}
               aria-label="Menu"
             >
-              {mobileMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+              {mobileMenuOpen ? <FiX size={22} /> : <FiMenu size={22} />}
             </button>
 
             <nav className="hidden lg:flex items-center gap-8">
@@ -87,39 +88,42 @@ const Header = () => {
             </nav>
           </div>
 
+          {/* Center: logo */}
           <Link to="/" className="absolute left-1/2 -translate-x-1/2 lg:relative lg:left-0 lg:translate-x-0">
-            <h1 className="text-xl lg:text-2xl font-black tracking-[0.3em] uppercase">RAWTHREAD</h1>
+            <h1 className="text-lg lg:text-2xl font-black tracking-[0.2em] lg:tracking-[0.3em] uppercase">RAWTHREAD</h1>
           </Link>
 
-          <div className="flex items-center gap-3 lg:gap-5">
+          {/* Right: actions */}
+          <div className="flex items-center gap-1 sm:gap-2 lg:gap-4">
             <button
               onClick={() => dispatch(setSearchOpen(true))}
-              className="p-2 hover:bg-bg-alt rounded-full transition-colors"
+              className="p-2.5 rounded-full hover:bg-gray-100 active:bg-gray-200 transition-colors"
               aria-label="Search"
             >
               <FiSearch size={20} />
             </button>
 
-            <Link
-              to={isLoggedIn ? '/account/wishlist' : '/login'}
-              className="hidden sm:block p-2 hover:bg-bg-alt rounded-full transition-colors"
-              aria-label="Wishlist"
-            >
-              <FiHeart size={20} />
-            </Link>
-
+            {/* User icon — always visible on mobile for auth access */}
             <Link
               to={isLoggedIn ? '/account' : '/login'}
-              className="hidden sm:block p-2 hover:bg-bg-alt rounded-full transition-colors"
+              className="p-2.5 rounded-full hover:bg-gray-100 active:bg-gray-200 transition-colors"
               aria-label="Account"
             >
               <FiUser size={20} />
             </Link>
 
+            <Link
+              to={isLoggedIn ? '/account/wishlist' : '/login'}
+              className="hidden sm:flex p-2.5 rounded-full hover:bg-gray-100 active:bg-gray-200 transition-colors"
+              aria-label="Wishlist"
+            >
+              <FiHeart size={20} />
+            </Link>
+
             <div className="relative">
               <button
                 onClick={() => setCartOpen(true)}
-                className="relative p-2 hover:bg-bg-alt rounded-full transition-colors"
+                className="relative p-2.5 rounded-full hover:bg-gray-100 active:bg-gray-200 transition-colors"
                 aria-label="Cart"
               >
                 <FiShoppingBag size={20} />
@@ -127,7 +131,7 @@ const Header = () => {
                   <motion.span
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="absolute -top-0.5 -right-0.5 bg-primary text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center"
+                    className="absolute top-0.5 right-0.5 bg-primary text-white text-[10px] font-bold w-[18px] h-[18px] rounded-full flex items-center justify-center"
                   >
                     {cartCount}
                   </motion.span>

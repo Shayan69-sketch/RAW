@@ -24,10 +24,12 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
   }
 
   html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
@@ -36,17 +38,23 @@
     background: var(--color-bg);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
   }
 
   ::selection {
     background: var(--color-primary);
     color: white;
   }
+
+  /* Better mobile input styling */
+  input, select, textarea {
+    font-size: 16px; /* Prevents iOS zoom on focus */
+  }
 }
 
 @layer components {
   .btn {
-    @apply inline-flex items-center justify-center px-6 py-3 font-semibold text-sm tracking-wider uppercase transition-all duration-200 cursor-pointer;
+    @apply inline-flex items-center justify-center px-6 py-3 font-semibold text-sm tracking-wider uppercase transition-all duration-200 cursor-pointer active:scale-[0.98];
   }
 
   .btn-primary {
@@ -66,15 +74,20 @@
   }
 
   .input-field {
-    @apply w-full px-4 py-3 border border-border rounded-none text-sm focus:outline-none focus:border-primary transition-colors;
+    @apply w-full px-4 py-3.5 border border-border rounded-lg text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/10 transition-all;
   }
 
   .section-title {
-    @apply text-2xl md:text-3xl font-bold tracking-tight;
+    @apply text-xl sm:text-2xl md:text-3xl font-bold tracking-tight;
   }
 
   .skeleton {
     @apply animate-pulse bg-gray-200 rounded;
+  }
+
+  /* Touch-friendly utility */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
   }
 }
 
@@ -85,6 +98,9 @@
   .hide-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 }
 
@@ -98,24 +114,22 @@
   color: var(--color-primary) !important;
 }
 
+/* Make swiper arrows smaller on mobile */
+@media (max-width: 768px) {
+  .swiper-button-next,
+  .swiper-button-prev {
+    --swiper-navigation-size: 28px;
+  }
+  .swiper-button-next::after,
+  .swiper-button-prev::after {
+    font-size: 16px !important;
+  }
+}
+
 /* Toast overrides */
 .Toastify__toast {
   font-family: var(--font-sans) !important;
-  border-radius: 0 !important;
-}
-
-/* React transition animations */
-.page-enter {
-  opacity: 0;
-  transform: translateY(10px);
-}
-.page-enter-active {
-  opacity: 1;
-  transform: translateY(0);
-}
-.page-exit {
-  opacity: 1;
-}
-.page-exit-active {
-  opacity: 0;
+  border-radius: 12px !important;
+  font-size: 13px !important;
+  margin: 8px !important;
 }

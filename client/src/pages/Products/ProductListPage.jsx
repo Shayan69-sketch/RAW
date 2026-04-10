@@ -45,7 +45,7 @@ const ProductListPage = () => {
     if (params.isSale) filters.push({ key: 'isSale', label: 'On Sale' });
     if (params.minPrice || params.maxPrice) filters.push({ key: 'price', label: `$${params.minPrice || 0} - $${params.maxPrice || '∞'}` });
     return filters;
-  }, [params]);
+  }, [params.gender, params.size, params.color, params.sport, params.isSale, params.minPrice, params.maxPrice]);
 
   const removeFilter = (key) => {
     const newParams = new URLSearchParams(searchParams);

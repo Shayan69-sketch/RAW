@@ -8,7 +8,7 @@ import ProductCard from '../../components/common/ProductCard';
 import { useGetCartQuery, useUpdateCartItemMutation, useRemoveCartItemMutation, useApplyCouponMutation, useRemoveCouponMutation } from '../../services/cartApi';
 import { useGetProductsQuery } from '../../services/productApi';
 import { useCurrency } from '../../context/CurrencyContext';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 
 const CartPage = () => {
   const { data: cartData, isLoading } = useGetCartQuery();
@@ -23,16 +23,16 @@ const CartPage = () => {
   const cart = cartData?.cart;
   const items = cart?.items || [];
 
-  const subtotal = items.reduce((sum, item) => {
+  const subtotal = useMemo(() => items.reduce((sum, item) => {
     const price = item.product?.isSale && item.product?.salePrice ? item.product.salePrice : (item.priceAtAdd || item.product?.basePrice || 0);
     return sum + price * item.quantity;
-  }, 0);
+  }, 0), [items]);
 
-  const discount = cart?.couponApplied
+  const discount = useMemo(() => cart?.couponApplied
     ? cart.couponApplied.type === 'percent'
       ? (subtotal * cart.couponApplied.value) / 100
       : cart.couponApplied.value
-    : 0;
+    : 0, [cart?.couponApplied, subtotal]);
 
   const shipping = subtotal >= 75 ? 0 : 5.99;
   const total = subtotal - discount + shipping;

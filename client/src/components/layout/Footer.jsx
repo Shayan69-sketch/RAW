@@ -31,24 +31,24 @@ const Footer = () => {
     <footer className="bg-primary text-white">
       {/* Newsletter section */}
       <div className="border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 py-12 lg:py-16">
+        <div className="max-w-7xl mx-auto px-4 py-10 lg:py-16">
           <div className="max-w-xl mx-auto text-center">
-            <h3 className="text-2xl font-bold tracking-wider uppercase mb-3">Join The Family</h3>
-            <p className="text-sm text-white/60 mb-6">
+            <h3 className="text-xl sm:text-2xl font-bold tracking-wider uppercase mb-3">Join The Family</h3>
+            <p className="text-xs sm:text-sm text-white/60 mb-5">
               Be the first to know about new releases, exclusive offers, and get 10% off your first order.
             </p>
-            <form onSubmit={handleNewsletterSubmit} className="flex">
+            <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-2 sm:gap-0">
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
-                className="flex-1 px-4 py-3 bg-white/10 text-white placeholder-white/40 text-sm focus:outline-none focus:bg-white/15 transition-colors"
+                className="flex-1 px-4 py-3.5 bg-white/10 text-white placeholder-white/40 text-sm rounded-lg sm:rounded-none sm:rounded-l focus:outline-none focus:bg-white/15 transition-colors"
                 required
               />
               <button
                 type="submit"
-                className="px-6 py-3 bg-white text-primary text-sm font-bold uppercase tracking-wider hover:bg-white/90 transition-colors"
+                className="px-6 py-3.5 bg-white text-primary text-sm font-bold uppercase tracking-wider hover:bg-white/90 active:scale-[0.98] transition-all rounded-lg sm:rounded-none sm:rounded-r"
               >
                 Subscribe
               </button>
@@ -58,11 +58,11 @@ const Footer = () => {
       </div>
 
       {/* Main footer */}
-      <div className="max-w-7xl mx-auto px-4 py-10 lg:py-14">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+      <div className="max-w-7xl mx-auto px-4 py-8 lg:py-14">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-widest mb-5">Help</h4>
-            <ul className="space-y-3">
+            <h4 className="text-[11px] font-bold uppercase tracking-widest mb-4">Help</h4>
+            <ul className="space-y-2.5">
               {['FAQ', 'Delivery', 'Returns', 'Size Guide', 'Contact Us'].map((item) => (
                 <li key={item}>
                   <Link to="/help" className="text-sm text-white/60 hover:text-white transition-colors">
@@ -74,8 +74,8 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-widest mb-5">About</h4>
-            <ul className="space-y-3">
+            <h4 className="text-[11px] font-bold uppercase tracking-widest mb-4">About</h4>
+            <ul className="space-y-2.5">
               {[
                 { label: 'Our Story', to: '/about' },
                 { label: 'Athletes', to: '/about' },
@@ -93,8 +93,8 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-widest mb-5">Shop</h4>
-            <ul className="space-y-3">
+            <h4 className="text-[11px] font-bold uppercase tracking-widest mb-4">Shop</h4>
+            <ul className="space-y-2.5">
               {[
                 { label: "Men's", to: '/products?gender=men' },
                 { label: "Women's", to: '/products?gender=women' },
@@ -112,21 +112,21 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-widest mb-5">Follow Us</h4>
-            <div className="flex gap-4 mb-6">
+            <h4 className="text-[11px] font-bold uppercase tracking-widest mb-4">Follow Us</h4>
+            <div className="flex gap-3 mb-5">
               {[FiInstagram, FiTwitter, FiFacebook, FiYoutube].map((Icon, i) => (
                 <a
                   key={i}
                   href="#"
-                  className="w-10 h-10 flex items-center justify-center border border-white/20 hover:bg-white hover:text-primary transition-all"
+                  className="w-10 h-10 flex items-center justify-center border border-white/20 rounded-lg hover:bg-white hover:text-primary active:scale-95 transition-all"
                 >
-                  <Icon size={18} />
+                  <Icon size={16} />
                 </a>
               ))}
             </div>
 
-            <h4 className="text-xs font-bold uppercase tracking-widest mb-4">Payment Methods</h4>
-            <div className="flex flex-wrap gap-2 text-xs text-white/50">
+            <h4 className="text-[11px] font-bold uppercase tracking-widest mb-3">Payment Methods</h4>
+            <div className="flex flex-wrap gap-1.5 text-[10px] text-white/50">
               {['Visa', 'Mastercard', 'Amex', 'PayPal', 'Apple Pay'].map((method) => (
                 <span key={method} className="px-2 py-1 border border-white/20 rounded">
                   {method}
@@ -139,14 +139,14 @@ const Footer = () => {
 
       {/* Bottom bar */}
       <div className="border-t border-white/10">
-        <div className="max-w-7xl mx-auto px-4 py-5 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-white/40">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-3">
+          <p className="text-[11px] text-white/40">
             © {new Date().getFullYear()} RAWTHREAD. All Rights Reserved.
           </p>
-          <div className="flex gap-6 text-xs text-white/40">
-            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms & Conditions</a>
-            <a href="#" className="hover:text-white transition-colors">Cookie Policy</a>
+          <div className="flex gap-4 text-[11px] text-white/40">
+            <a href="#" className="hover:text-white transition-colors">Privacy</a>
+            <a href="#" className="hover:text-white transition-colors">Terms</a>
+            <a href="#" className="hover:text-white transition-colors">Cookies</a>
           </div>
         </div>
       </div>

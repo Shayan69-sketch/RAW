@@ -86,7 +86,7 @@ const HomePage = () => {
       {/* ── SCROLLING MARQUEE ── */}
       <div className="bg-primary text-white py-3 overflow-hidden">
         <motion.div className="flex whitespace-nowrap" animate={{ x: ['0%', '-50%'] }} transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}>
-          <span className="text-xs font-bold tracking-[0.3em] uppercase mx-8">{marqueeText.repeat(6)}</span>
+          <span className="text-xs font-bold tracking-[0.3em] uppercase mx-8">{marqueeText.repeat(3)}</span>
         </motion.div>
       </div>
 
@@ -97,7 +97,7 @@ const HomePage = () => {
           {categories.map((cat) => (
             <motion.div key={cat.name} {...staggerChild}>
               <Link to={cat.link} className="group relative block overflow-hidden aspect-[3/4]">
-                <img src={cat.image} alt={cat.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                <img src={cat.image} alt={cat.name} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all duration-500" />
                 <div className="absolute bottom-0 left-0 right-0 p-5 translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
                   <h3 className="text-white text-xl lg:text-2xl font-black uppercase tracking-wider">{cat.name}</h3>
@@ -163,7 +163,7 @@ const HomePage = () => {
             {sports.map((sport) => (
               <motion.div key={sport.name} {...staggerChild}>
                 <Link to={sport.link} className="group relative block overflow-hidden aspect-[3/5]">
-                  <img src={sport.image} alt={sport.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 brightness-75 group-hover:brightness-100" />
+                  <img src={sport.image} alt={sport.name} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 brightness-75 group-hover:brightness-100" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-5 text-center">
                     <h3 className="text-white text-lg font-black uppercase tracking-[0.2em]">{sport.name}</h3>
@@ -198,7 +198,7 @@ const HomePage = () => {
             {ambassadors.map((amb) => (
               <motion.div key={amb.name} {...staggerChild} whileHover={{ y: -8 }} className="text-center group cursor-pointer">
                 <div className="overflow-hidden mb-4 aspect-square rounded-sm shadow-lg">
-                  <img src={amb.image} alt={amb.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                  <img src={amb.image} alt={amb.name} loading="lazy" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                 </div>
                 <h4 className="font-bold uppercase tracking-wider text-sm">{amb.name}</h4>
                 <p className="text-xs text-text-muted mt-0.5">{amb.role}</p>
@@ -239,7 +239,7 @@ const HomePage = () => {
             <motion.div key={idx} {...staggerChild}>
               <Link to="/blog" className="group block">
                 <div className="overflow-hidden mb-4 aspect-[16/10]">
-                  <img src={post.image} alt={post.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                  <img src={post.image} alt={post.title} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 </div>
                 <span className="text-xs font-bold uppercase tracking-[0.2em] text-text-muted">{post.category}</span>
                 <h3 className="text-lg font-semibold mt-1 group-hover:underline">{post.title}</h3>
@@ -255,7 +255,7 @@ const HomePage = () => {
         <div className="grid grid-cols-3 md:grid-cols-6 gap-1">
           {['1534438327276-14e5300c3a48', '1571019613454-1bd2f1e7f68e', '1518611012118-696072aa579a', '1517836357463-d25dfeac3438', '1556906781-9a412961c28c', '1544367567-0f2fcb009e0b'].map((id, idx) => (
             <motion.div key={idx} initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: idx * 0.08, duration: 0.5 }} whileHover={{ scale: 1.05, zIndex: 10 }} className="aspect-square overflow-hidden cursor-pointer">
-              <img src={`https://images.unsplash.com/photo-${id}?w=300&h=300&fit=crop`} alt="Instagram" className="w-full h-full object-cover" />
+              <img src={`https://images.unsplash.com/photo-${id}?w=300&h=300&fit=crop`} alt="Instagram" loading="lazy" className="w-full h-full object-cover" />
             </motion.div>
           ))}
         </div>

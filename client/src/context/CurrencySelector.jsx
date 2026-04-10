@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { FiChevronDown, FiCheck } from 'react-icons/fi';
-import { useCurrency } from '../../context/CurrencyContext';
+import { useCurrency } from './CurrencyContext';
 
 const CurrencySelector = () => {
   const { currency, currencies, changeCurrency } = useCurrency();

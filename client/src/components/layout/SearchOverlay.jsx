@@ -6,6 +6,7 @@ import { FiSearch, FiX } from 'react-icons/fi';
 import { setSearchOpen } from '../../features/ui/uiSlice';
 import { useDebounce } from '../../hooks/useDebounce';
 import { useGetProductsQuery } from '../../services/productApi';
+import { formatPrice } from '../../utils/formatPrice';
 
 const SearchOverlay = () => {
   const [query, setQuery] = useState('');
@@ -98,7 +99,7 @@ const SearchOverlay = () => {
                   <div>
                     <p className="text-sm font-semibold">{product.name}</p>
                     <p className="text-sm text-text-light">
-                      ${product.isSale && product.salePrice ? product.salePrice : product.basePrice}
+                      {formatPrice(product.isSale && product.salePrice ? product.salePrice : product.basePrice)}
                     </p>
                   </div>
                 </button>

@@ -1,5 +1,4 @@
 import { toast } from 'react-toastify';
-import SEO from '../../components/common/SEO';
 
 const AdminCoupons = () => {
   const coupons = [
