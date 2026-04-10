@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiShoppingBag, FiX, FiMinus, FiPlus, FiArrowRight } from 'react-icons/fi';
 import { useGetCartQuery, useUpdateCartItemMutation, useRemoveCartItemMutation } from '../../services/cartApi';
-import { formatPrice } from '../../utils/formatPrice';
+import { useCurrency } from '../../context/CurrencyContext';
 import { toast } from 'react-toastify';
 
 const CartPreview = ({ isOpen, onClose }) => {
@@ -11,6 +11,7 @@ const CartPreview = ({ isOpen, onClose }) => {
   const [updateItem] = useUpdateCartItemMutation();
   const [removeItem] = useRemoveCartItemMutation();
   const ref = useRef(null);
+  const { format } = useCurrency();
 
   const cart = cartData?.cart;
   const items = cart?.items || [];
@@ -96,7 +97,7 @@ const CartPreview = ({ isOpen, onClose }) => {
               <div className="px-4 sm:px-5 py-2.5 bg-gray-50 border-b border-gray-100 shrink-0">
                 <div className="flex items-center justify-between mb-1.5">
                   <p className="text-xs text-gray-600">
-                    Add <span className="font-bold">{formatPrice(75 - subtotal)}</span> more for free shipping
+                    Add <span className="font-bold">{format(75 - subtotal)}</span> more for free shipping
                   </p>
                   <span className="text-xs">🚚</span>
                 </div>
@@ -193,7 +194,7 @@ const CartPreview = ({ isOpen, onClose }) => {
                                 <FiPlus size={12} />
                               </button>
                             </div>
-                            <span className="text-xs font-bold text-gray-900">{formatPrice(price * item.quantity)}</span>
+                            <span className="text-xs font-bold text-gray-900">{format(price * item.quantity)}</span>
                           </div>
                         </div>
                       </div>
@@ -209,11 +210,11 @@ const CartPreview = ({ isOpen, onClose }) => {
                 <div className="space-y-1.5">
                   <div className="flex justify-between text-xs text-gray-500">
                     <span>Subtotal</span>
-                    <span>{formatPrice(subtotal)}</span>
+                    <span>{format(subtotal)}</span>
                   </div>
                   <div className="flex justify-between text-xs text-gray-500">
                     <span>Shipping</span>
-                    <span>{shipping === 0 ? <span className="text-green-600 font-semibold">FREE</span> : formatPrice(shipping)}</span>
+                    <span>{shipping === 0 ? <span className="text-green-600 font-semibold">FREE</span> : format(shipping)}</span>
                   </div>
                   {cart?.couponApplied && (
                     <div className="flex justify-between text-xs text-green-600">
@@ -221,13 +222,13 @@ const CartPreview = ({ isOpen, onClose }) => {
                       <span>
                         -{cart.couponApplied.type === 'percent'
                           ? `${cart.couponApplied.value}%`
-                          : formatPrice(cart.couponApplied.value)}
+                          : format(cart.couponApplied.value)}
                       </span>
                     </div>
                   )}
                   <div className="flex justify-between font-bold text-sm pt-1.5 border-t border-gray-100">
                     <span>Total</span>
-                    <span>{formatPrice(subtotal + shipping)}</span>
+                    <span>{format(subtotal + shipping)}</span>
                   </div>
                 </div>
 

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { FiArrowLeft, FiEdit2 } from 'react-icons/fi';
 import SEO from '../../components/common/SEO';
 import { useGetCartQuery } from '../../services/cartApi';
 import { useCreateOrderMutation } from '../../services/orderApi';
@@ -66,10 +67,17 @@ const CheckoutPage = () => {
           {['Contact', 'Shipping', 'Payment', 'Review'].map((s, idx) => (
             <div key={s} className="flex items-center gap-2">
               <button
-                onClick={() => setStep(idx + 1)}
-                className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${step >= idx + 1 ? 'bg-primary text-white' : 'bg-gray-200 text-text-muted'}`}
+                onClick={() => {
+                  // Allow going back to completed steps, but not forward to uncompleted
+                  if (idx + 1 <= step) setStep(idx + 1);
+                }}
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+                  step >= idx + 1
+                    ? 'bg-primary text-white cursor-pointer hover:bg-primary-light'
+                    : 'bg-gray-200 text-text-muted cursor-not-allowed'
+                }`}
               >
-                {idx + 1}
+                {step > idx + 1 ? '✓' : idx + 1}
               </button>
               <span className={`hidden sm:inline ${step === idx + 1 ? 'font-semibold' : 'text-text-muted'}`}>{s}</span>
               {idx < 3 && <div className={`w-8 h-px ${step > idx + 1 ? 'bg-primary' : 'bg-gray-200'}`} />}
@@ -89,7 +97,13 @@ const CheckoutPage = () => {
 
             {step === 2 && (
               <div className="space-y-4">
-                <h2 className="text-lg font-bold uppercase tracking-wider mb-4">Shipping Address</h2>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-bold uppercase tracking-wider">Shipping Address</h2>
+                  <button onClick={() => setStep(1)} className="flex items-center gap-1 text-xs text-text-muted hover:text-primary transition-colors">
+                    <FiArrowLeft size={12} />
+                    Back
+                  </button>
+                </div>
                 <input placeholder="Street Address" value={shipping.street} onChange={(e) => setShipping({ ...shipping, street: e.target.value })} className="input-field" required />
                 <div className="grid grid-cols-2 gap-4">
                   <input placeholder="City" value={shipping.city} onChange={(e) => setShipping({ ...shipping, city: e.target.value })} className="input-field" required />
@@ -105,7 +119,13 @@ const CheckoutPage = () => {
 
             {step === 3 && (
               <div className="space-y-4">
-                <h2 className="text-lg font-bold uppercase tracking-wider mb-4">Payment Method</h2>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-bold uppercase tracking-wider">Payment Method</h2>
+                  <button onClick={() => setStep(2)} className="flex items-center gap-1 text-xs text-text-muted hover:text-primary transition-colors">
+                    <FiArrowLeft size={12} />
+                    Back
+                  </button>
+                </div>
                 <label className={`flex items-center gap-3 p-4 border cursor-pointer ${paymentMethod === 'stripe' ? 'border-primary bg-blue-50' : 'border-border'}`}>
                   <input type="radio" name="payment" checked={paymentMethod === 'stripe'} onChange={() => setPaymentMethod('stripe')} />
                   <span className="font-semibold text-sm">Credit / Debit Card (Stripe)</span>
@@ -121,19 +141,59 @@ const CheckoutPage = () => {
 
             {step === 4 && (
               <div className="space-y-6">
-                <h2 className="text-lg font-bold uppercase tracking-wider mb-4">Review Your Order</h2>
-                <div className="border border-border p-4">
-                  <h3 className="text-xs font-bold uppercase mb-2">Contact</h3>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-bold uppercase tracking-wider">Review Your Order</h2>
+                  <button onClick={() => setStep(3)} className="flex items-center gap-1 text-xs text-text-muted hover:text-primary transition-colors">
+                    <FiArrowLeft size={12} />
+                    Back
+                  </button>
+                </div>
+
+                {/* Contact - editable */}
+                <div className="border border-border p-4 group hover:border-primary/50 transition-colors">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-xs font-bold uppercase">Contact</h3>
+                    <button
+                      onClick={() => setStep(1)}
+                      className="flex items-center gap-1 text-[10px] font-semibold text-text-muted hover:text-primary transition-colors uppercase tracking-wider"
+                    >
+                      <FiEdit2 size={10} />
+                      Edit
+                    </button>
+                  </div>
                   <p className="text-sm">{contact.email}</p>
                 </div>
-                <div className="border border-border p-4">
-                  <h3 className="text-xs font-bold uppercase mb-2">Ship To</h3>
+
+                {/* Shipping Address - editable */}
+                <div className="border border-border p-4 group hover:border-primary/50 transition-colors">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-xs font-bold uppercase">Ship To</h3>
+                    <button
+                      onClick={() => setStep(2)}
+                      className="flex items-center gap-1 text-[10px] font-semibold text-text-muted hover:text-primary transition-colors uppercase tracking-wider"
+                    >
+                      <FiEdit2 size={10} />
+                      Edit
+                    </button>
+                  </div>
                   <p className="text-sm">{shipping.street}, {shipping.city}, {shipping.state} {shipping.zip}</p>
                 </div>
-                <div className="border border-border p-4">
-                  <h3 className="text-xs font-bold uppercase mb-2">Payment</h3>
-                  <p className="text-sm capitalize">{paymentMethod}</p>
+
+                {/* Payment Method - editable */}
+                <div className="border border-border p-4 group hover:border-primary/50 transition-colors">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-xs font-bold uppercase">Payment</h3>
+                    <button
+                      onClick={() => setStep(3)}
+                      className="flex items-center gap-1 text-[10px] font-semibold text-text-muted hover:text-primary transition-colors uppercase tracking-wider"
+                    >
+                      <FiEdit2 size={10} />
+                      Edit
+                    </button>
+                  </div>
+                  <p className="text-sm capitalize">{paymentMethod === 'stripe' ? 'Credit / Debit Card (Stripe)' : 'PayPal'}</p>
                 </div>
+
                 <button onClick={handlePlaceOrder} disabled={isLoading} className="btn btn-primary w-full py-4 text-base">
                   {isLoading ? 'Processing...' : `Place Order — ${format(total)}`}
                 </button>

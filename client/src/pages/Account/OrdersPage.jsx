@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
 import { useGetMyOrdersQuery } from '../../services/orderApi';
-import { formatPrice } from '../../utils/formatPrice';
+import { useCurrency } from '../../context/CurrencyContext';
 import { ORDER_STATUSES } from '../../utils/constants';
 
 const OrdersPage = () => {
   const { data, isLoading } = useGetMyOrdersQuery();
+  const { format } = useCurrency();
 
   const getStatusBadge = (status) => {
     const s = ORDER_STATUSES.find((o) => o.value === status);
@@ -28,7 +29,7 @@ const OrdersPage = () => {
               </div>
               <div className="flex items-center justify-between text-sm text-text-muted">
                 <span>{new Date(order.createdAt).toLocaleDateString()}</span>
-                <span className="font-semibold text-primary">{formatPrice(order.total)}</span>
+                <span className="font-semibold text-primary">{format(order.total)}</span>
               </div>
               <div className="flex gap-2 mt-3">
                 {order.items.slice(0, 4).map((item, idx) => (

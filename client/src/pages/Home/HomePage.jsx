@@ -12,6 +12,7 @@ import { useGetProductsQuery } from '../../services/productApi';
 import { ProductGridSkeleton } from '../../components/common/Loader';
 import { useState, useRef } from 'react';
 import { FiArrowRight, FiSend } from 'react-icons/fi';
+import { useCurrency } from '../../context/CurrencyContext';
 
 const fadeUp = { initial: { opacity: 0, y: 40 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, margin: '-50px' }, transition: { duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] } };
 const stagger = { initial: { opacity: 0 }, whileInView: { opacity: 1 }, viewport: { once: true }, transition: { staggerChildren: 0.1 } };
@@ -25,6 +26,7 @@ const HomePage = () => {
   const parallaxRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: parallaxRef, offset: ['start end', 'end start'] });
   const parallaxY = useTransform(scrollYProgress, [0, 1], ['-10%', '10%']);
+  const { format } = useCurrency();
 
   const heroSlides = [
     { image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1920&h=1080&fit=crop&q=85', title: 'NEW SEASON.\nNEW STANDARDS.', subtitle: 'Unlock your potential with performance-engineered apparel.', cta: 'Shop Now', link: '/products' },
@@ -53,7 +55,7 @@ const HomePage = () => {
     { name: 'Natacha Oceane', role: 'Athlete', image: 'https://images.unsplash.com/photo-1518310383802-640c2de311b2?w=400&h=400&fit=crop' },
   ];
 
-  const marqueeText = 'FREE SHIPPING OVER $75  ★  NEW ARRIVALS WEEKLY  ★  RAWTHREAD REWARDS  ★  14-DAY RETURNS  ★  ';
+  const marqueeText = `FREE SHIPPING OVER ${format(75)}  ★  NEW ARRIVALS WEEKLY  ★  RAWTHREAD REWARDS  ★  14-DAY RETURNS  ★  `;
 
   return (
     <>

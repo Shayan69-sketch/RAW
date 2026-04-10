@@ -1,8 +1,9 @@
-import { formatPrice } from '../../utils/formatPrice';
+import { useCurrency } from '../../context/CurrencyContext';
 import { getFreeShippingProgress } from '../../utils/helpers';
 
 const FreeShippingBar = ({ subtotal }) => {
   const { eligible, remaining, percentage } = getFreeShippingProgress(subtotal);
+  const { format } = useCurrency();
 
   return (
     <div className="mb-4">
@@ -11,7 +12,7 @@ const FreeShippingBar = ({ subtotal }) => {
           <span className="text-green-600 font-semibold">✓ You've unlocked free shipping!</span>
         ) : (
           <span className="text-text-light">
-            Spend <span className="font-semibold text-primary">{formatPrice(remaining)}</span> more for free shipping
+            Spend <span className="font-semibold text-primary">{format(remaining)}</span> more for free shipping
           </span>
         )}
       </div>

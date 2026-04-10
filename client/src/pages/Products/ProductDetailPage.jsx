@@ -16,9 +16,10 @@ import { ProductDetailSkeleton } from '../../components/common/Loader';
 import { useGetProductBySlugQuery, useGetProductsQuery } from '../../services/productApi';
 import { useGetProductReviewsQuery } from '../../services/reviewApi';
 import { useAddToCartMutation } from '../../services/cartApi';
-import { formatPrice, getDiscountPercentage } from '../../utils/formatPrice';
+import { getDiscountPercentage } from '../../utils/formatPrice';
 import { getStockStatus, generateSessionId } from '../../utils/helpers';
 import { useRecentlyViewed } from '../../hooks/useRecentlyViewed';
+import { useCurrency } from '../../context/CurrencyContext';
 
 const ProductDetailPage = () => {
   const { slug } = useParams();
@@ -29,6 +30,7 @@ const ProductDetailPage = () => {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const [addToCart, { isLoading: adding }] = useAddToCartMutation();
   const { addItem: addRecentlyViewed } = useRecentlyViewed();
+  const { format } = useCurrency();
 
   const product = data?.product;
 
@@ -143,11 +145,11 @@ const ProductDetailPage = () => {
 
             <div className="flex items-center gap-3 mb-4">
               <span className={`text-xl font-bold ${product.isSale ? 'text-red-600' : ''}`}>
-                {formatPrice(price)}
+                {format(price)}
               </span>
               {product.isSale && product.salePrice && (
                 <>
-                  <span className="text-lg text-text-muted line-through">{formatPrice(product.basePrice)}</span>
+                  <span className="text-lg text-text-muted line-through">{format(product.basePrice)}</span>
                   <span className="bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5">-{discount}%</span>
                 </>
               )}
@@ -339,7 +341,7 @@ const ProductDetailPage = () => {
             selectedSize ? 'bg-primary text-white' : 'bg-gray-200 text-text-muted'
           }`}
         >
-          {adding ? 'Adding...' : selectedSize ? `Add to Bag — ${formatPrice(price)}` : 'Select a Size'}
+          {adding ? 'Adding...' : selectedSize ? `Add to Bag — ${format(price)}` : 'Select a Size'}
         </button>
       </div>
     </>

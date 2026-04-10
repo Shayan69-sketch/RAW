@@ -6,7 +6,7 @@ import { FiSearch, FiX } from 'react-icons/fi';
 import { setSearchOpen } from '../../features/ui/uiSlice';
 import { useDebounce } from '../../hooks/useDebounce';
 import { useGetProductsQuery } from '../../services/productApi';
-import { formatPrice } from '../../utils/formatPrice';
+import { useCurrency } from '../../context/CurrencyContext';
 
 const SearchOverlay = () => {
   const [query, setQuery] = useState('');
@@ -14,6 +14,7 @@ const SearchOverlay = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const inputRef = useRef(null);
+  const { format } = useCurrency();
 
   const { data, isFetching } = useGetProductsQuery(
     { search: debouncedQuery, limit: 6 },
@@ -99,7 +100,7 @@ const SearchOverlay = () => {
                   <div>
                     <p className="text-sm font-semibold">{product.name}</p>
                     <p className="text-sm text-text-light">
-                      {formatPrice(product.isSale && product.salePrice ? product.salePrice : product.basePrice)}
+                      {format(product.isSale && product.salePrice ? product.salePrice : product.basePrice)}
                     </p>
                   </div>
                 </button>

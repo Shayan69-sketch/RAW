@@ -3,12 +3,16 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setMobileMenuOpen } from '../../features/ui/uiSlice';
 import { useAuth } from '../../hooks/useAuth';
-import { FiChevronRight, FiArrowLeft, FiUser, FiHeart, FiPackage, FiLogOut, FiHelpCircle, FiBookOpen, FiInfo } from 'react-icons/fi';
+import { useCurrency } from '../../context/CurrencyContext';
+import { FiChevronRight, FiArrowLeft, FiUser, FiHeart, FiPackage, FiLogOut, FiHelpCircle, FiBookOpen, FiInfo, FiGlobe, FiCheck } from 'react-icons/fi';
+import { useState } from 'react';
 
 const MobileMenu = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isLoggedIn, isAdmin, user, logout } = useAuth();
+  const { currency, currencies, changeCurrency } = useCurrency();
+  const [currencyOpen, setCurrencyOpen] = useState(false);
   const close = () => dispatch(setMobileMenuOpen(false));
 
   const menuLinks = [
@@ -106,6 +110,45 @@ const MobileMenu = () => {
             </Link>
           ))}
         </nav>
+
+        {/* Currency Selector */}
+        <div className="px-2 py-2 border-t border-gray-100">
+          <p className="px-3 mb-2 mt-2 text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">Currency</p>
+          <button
+            onClick={() => setCurrencyOpen(!currencyOpen)}
+            className="flex items-center justify-between w-full px-4 py-3 rounded-xl text-sm text-gray-700 active:bg-gray-100 transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <FiGlobe size={16} className="text-gray-400" />
+              <span className="text-[15px] font-semibold">{currency.flag} {currency.code}</span>
+              <span className="text-xs text-gray-400">({currency.symbol})</span>
+            </div>
+            <FiChevronRight size={16} className={`text-gray-300 transition-transform ${currencyOpen ? 'rotate-90' : ''}`} />
+          </button>
+          {currencyOpen && (
+            <div className="ml-2 mr-2 mb-2 bg-gray-50 rounded-xl overflow-hidden border border-gray-100">
+              {currencies.map((c) => (
+                <button
+                  key={c.code}
+                  onClick={() => {
+                    changeCurrency(c.code);
+                    setCurrencyOpen(false);
+                  }}
+                  className="flex items-center justify-between w-full px-4 py-3 text-sm hover:bg-gray-100 active:bg-gray-200 transition-colors"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <span className="text-base">{c.flag}</span>
+                    <div className="text-left">
+                      <p className="font-semibold text-gray-900">{c.code}</p>
+                      <p className="text-[10px] text-gray-400">{c.name}</p>
+                    </div>
+                  </div>
+                  {currency.code === c.code && <FiCheck size={14} className="text-primary" />}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* Account section */}
         {isLoggedIn && (

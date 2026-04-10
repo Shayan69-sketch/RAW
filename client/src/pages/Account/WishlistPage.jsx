@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { FiHeart, FiShoppingBag } from 'react-icons/fi';
 import { useGetWishlistQuery, useRemoveFromWishlistMutation } from '../../services/userApi';
 import { useAddToCartMutation } from '../../services/cartApi';
-import { formatPrice } from '../../utils/formatPrice';
+import { useCurrency } from '../../context/CurrencyContext';
 import { toast } from 'react-toastify';
 import { generateSessionId } from '../../utils/helpers';
 
@@ -10,6 +10,7 @@ const WishlistPage = () => {
   const { data, isLoading } = useGetWishlistQuery();
   const [removeFromWishlist] = useRemoveFromWishlistMutation();
   const [addToCart] = useAddToCartMutation();
+  const { format } = useCurrency();
 
   const handleRemove = async (productId) => {
     try { await removeFromWishlist(productId).unwrap(); toast.success('Removed from wishlist'); } catch { toast.error('Failed'); }
@@ -47,7 +48,7 @@ const WishlistPage = () => {
                   <img src={image} alt={product?.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 </Link>
                 <h3 className="text-sm font-semibold mb-1">{product?.name}</h3>
-                <p className="text-sm font-bold mb-3">{formatPrice(price)}</p>
+                <p className="text-sm font-bold mb-3">{format(price)}</p>
                 <div className="flex gap-2">
                   <button onClick={() => handleMoveToCart(item)} className="flex-1 btn btn-primary py-2 text-xs"><FiShoppingBag className="mr-1" /> Move to Bag</button>
                   <button onClick={() => handleRemove(product?._id)} className="p-2 border border-border hover:bg-red-50 hover:text-red-600"><FiHeart size={16} /></button>
